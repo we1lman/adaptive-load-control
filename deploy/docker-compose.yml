@@ -1,0 +1,26 @@
+version: "3.9"
+
+services:
+  gateway:
+    build:
+      context: .
+      dockerfile: build/Dockerfile
+    command: ["/bin/gateway", "-addr", ":9090"]
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+    ports:
+      - "9090:9090"
+
+  loadgen:
+    build:
+      context: .
+      dockerfile: build/Dockerfile
+    command: ["/bin/loadgen", "-target", "gateway:9090", "-rate", "200"]
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+    depends_on:
+      - gateway
